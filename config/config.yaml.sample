@@ -1,0 +1,4 @@
+awsconfig:
+    AWS_ACCESS_KEY_ID: XXX
+    AWS_SECRET_ACCESS_KEY: YYY
+    AWS_REGION: us-west-2
