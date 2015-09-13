@@ -3,6 +3,7 @@ require 'bundler/setup'
 require 'aws-sdk'
 require 'yaml'
 require 'optparse'
+require 'pp'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
@@ -63,8 +64,10 @@ class Opice
 
     def self.run_list()
         resp = @@ec2.describe_instances()
-        for i in resp.reservations[0].instances
-            puts "#{i.instance_id} - #{i.state.name}"
+        for r in resp.reservations
+            for i in r.instances
+                puts "#{i.instance_id} - #{i.state.name}"
+            end
         end
     end
 
