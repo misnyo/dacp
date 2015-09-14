@@ -1,2 +1,5 @@
 config/config.yaml
 *swp
+*swo
+.bundle
+vendor/bundle
