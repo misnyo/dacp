@@ -2,7 +2,16 @@ DACP
 =====
 Drupal hosting AWS scripts
 
+Quick run
+============
+* apt-get install puppet ruby ruby-bundler
+* bundle install --path vendor/bundle
+* ./dacp.rb
 
+Docker
+======
+* cp ~/.aws ./
+* docker build -t dacp .
 
 
 * Project Summary:
