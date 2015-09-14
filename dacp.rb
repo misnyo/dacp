@@ -7,7 +7,7 @@ require 'pp'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
-class Opice
+class Dacp
 
     @@available_commands = ["list", "start", "stop"]
     @@options = {}
@@ -25,7 +25,7 @@ class Opice
     def self.parse(args)
         options = {}
         OptionParser.new do |opts|
-            opts.banner = "Usage: opice.rb [command] [options]"
+            opts.banner = "Usage: dacp.rb [command] [options]"
             opts.separator ""
             opts.separator "Available commands: " + @@available_commands.join(", ")
             opts.separator ""
@@ -109,4 +109,4 @@ class Opice
 end
 
 
-Opice.run()
+Dacp.run()

@@ -1,3 +1,5 @@
 awsconfig:
-    SECURITY_GROUP: opice
-    AWS_REGION: us-west-2
+    SECURITY_GROUP: dacp
+    AWS_REGION: ap-southeast-1
+    IMAGE_ID: ami-5189a661
+    KEY_NAME: cheppers
