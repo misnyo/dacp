@@ -19,10 +19,7 @@ class Opice
     end
 
     def self.init_aws()
-        @@ec2 = Aws::EC2::Client.new(region: CONFIG['awsconfig']['AWS_REGION'], 
-                   credentials: Aws::Credentials.new(
-                       CONFIG['awsconfig']['AWS_ACCESS_KEY_ID'], 
-                       CONFIG['awsconfig']['AWS_SECRET_ACCESS_KEY']))
+        @@ec2 = Aws::EC2::Client.new(region: CONFIG['awsconfig']['AWS_REGION'])
     end
 
     def self.parse(args)
@@ -51,6 +48,9 @@ class Opice
                 @@available_commands.include? command
         end
         @@options[:command] = command
+        @@options[:security_group] = CONFIG['awsconfig']['SECURITY_GROUP']
+        @@options[:key_name] = CONFIG['awsconfig']['KEY_NAME']
+        @@options[:image_id] = CONFIG['awsconfig']['IMAGE_ID']
     end
 
     def self.run_command(command)
@@ -74,21 +74,37 @@ class Opice
     def self.run_start()
         raise "Please specify an instance for the command!" unless \
             @@options[:instance] or CONFIG['awsconfig']['default_instance']
-        if !@@options[:instance]
-            @@options[:instance] = !CONFIG['awsconfig']['default_instance']
-        end
         puts "Starting instance #{@@options[:instance]} ..."
-        @@ec2.start_instances({instance_ids: [@@options[:instance]]})
+        begin
+            @@ec2.start_instances({instance_ids: [@@options[:instance]]})
+        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
+            puts "#{error.message}"
+            return
+        end
+        begin
+            @@ec2.wait_until(:instance_running, instance_ids:[@@options[:instance]])
+            puts "Started instance #{@@options[:instance]}"
+        rescue Aws::Waiters::Errors::WaiterFailed => error
+            puts "Start failed (#{error.message}) for #{@@options[:instance]}"
+        end
     end
 
     def self.run_stop()
         raise "Please specify an instance for the command!" unless \
             @@options[:instance] or CONFIG['awsconfig']['default_instance']
-        if !@@options[:instance]
-            @@options[:instance] = CONFIG['awsconfig']['default_instance']
-        end
         puts "Stopping instance #{@@options[:instance]} ..."
-        @@ec2.stop_instances({instance_ids: [@@options[:instance]]})
+        begin
+            @@ec2.stop_instances({instance_ids: [@@options[:instance]]})
+        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
+            puts "#{error.message}"
+            return
+        end
+        begin
+            @@ec2.wait_until(:instance_stopped, instance_ids:[@@options[:instance]])
+            puts "Stopped instance #{@@options[:instance]}"
+        rescue Aws::Waiters::Errors::WaiterFailed => error
+            puts "Stop failed (#{error.message}) for #{@@options[:instance]}"
+        end
     end
 end
 

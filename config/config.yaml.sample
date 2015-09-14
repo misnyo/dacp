@@ -1,4 +1,3 @@
 awsconfig:
-    AWS_ACCESS_KEY_ID: XXX
-    AWS_SECRET_ACCESS_KEY: YYY
+    SECURITY_GROUP: opice
     AWS_REGION: us-west-2
