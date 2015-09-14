@@ -14,12 +14,14 @@ Docker
 * docker build -t dacp .
 
 
-* Project Summary:
+Project Summary
+===============
    * Launch a production-grade Drupal hosting cluster on the cloud
    * Document everything you do (including your code) and your learnings along the way
    * Present your solution architecture & learnings at an interview
 
-* High Level TODOs:
+High Level TODOs
+================
    * Obtain an AWS account.
         * Sign up for an Amazon AWS account to be able to launch a t2.micro (t2.micros are free for the first year)
    * Write a Ruby CLI script that will launch/suspend the server(s). Your
@@ -29,7 +31,8 @@ Docker
    * Have your Ruby CLI script or the configuration management system install Drupal (try Drush)
    * Add a method to your Ruby script to test that Drupal is running (returns a 200 response code and some HTML content from the Drupal page)
 
-* Project Goals:
+Project Goals
+=============
    * Show familiarity with AWS
    * Show familiarity with Linux
    * Show being able to pick up new skills (Ruby, LAMP technologies, Drupal, etc.)
@@ -37,7 +40,8 @@ Docker
    * Show capability to use version control
    * Show attention to detail and documentation skills
 
-* Bonus Points:
+Bonus Points
+============
    * Ensure the stack is Highly Available (no SPOFs)
    * Have your CLI script simulate an outage and prove the site is still responsive
    * Utilize AWS tech such as CloudFormation or autoscaling for setting up the HA cluster
