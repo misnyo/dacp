@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 require 'rubygems'
 require 'bundler/setup'
 require 'aws-sdk'
@@ -64,6 +65,7 @@ class Dacp
 
     def self.run_list()
         resp = @@ec2.describe_instances()
+        puts "No instances found!" unless !resp.reservations.empty?
         for r in resp.reservations
             for i in r.instances
                 puts "#{i.instance_id} - #{i.state.name}"
