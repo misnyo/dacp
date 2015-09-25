@@ -4,7 +4,8 @@ Drupal hosting AWS scripts
 
 Quick run
 ============
-* apt-get install puppet ruby ruby-bundler
+* apt-get install puppet ruby
+* gem install bundler
 * bundle install --path vendor/bundle
 * ./dacp.rb
 
