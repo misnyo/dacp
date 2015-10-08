@@ -68,7 +68,7 @@ class Dacp
         puts "No instances found!" unless !resp.reservations.empty?
         for r in resp.reservations
             for i in r.instances
-                puts "#{i.instance_id} - #{i.state.name}"
+                puts "#{i.instance_id} - #{i.tags.find {|t| t.key == "Name"}.value} - #{i.state.name}"
             end
         end
     end
