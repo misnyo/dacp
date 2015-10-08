@@ -54,7 +54,8 @@ ec2_instance { ['web-1', 'web-2']:
     department => 'engineering',
     project    => 'cloud',
     created_by => $::id,
-  }
+  },
+  key_name	  => "cheppers"
 }
 
 ec2_instance { 'db-1':
@@ -73,7 +74,8 @@ ec2_instance { 'db-1':
       device_name => '/dev/sda1',
       volume_size => 8,
     }
-  ]
+  ],
+  key_name	  => "cheppers"
 }
 
 elb_loadbalancer { 'lb-1':
