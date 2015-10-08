@@ -4,11 +4,7 @@ RUN \
     apt-get -y upgrade && \
     apt-get install -y ruby git ruby-bundler puppet
 
-ADD dacp.rb /root/dacp/dacp.rb
-ADD config /root/dacp/config
 ADD Gemfile /root/dacp/Gemfile
-ADD .aws /root/.aws
-ADD puppet /root/dacp/puppet
 
 ENV HOME /root
 WORKDIR /root
@@ -16,7 +12,11 @@ WORKDIR /root
 RUN \
     cd /root/dacp && \
     bundle install && \
-    puppet module install puppetlabs-aws && \
-    ./dacp.rb
+    puppet module install puppetlabs-aws
 
-CMD ["bash"]
+ADD config /root/dacp/config
+ADD .aws /root/.aws
+ADD dacp.rb /root/dacp/dacp.rb
+ADD puppet /root/dacp/puppet
+
+RUN cd /root/dacp && ./dacp.rb
