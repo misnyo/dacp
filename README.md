@@ -15,7 +15,7 @@ Docker
 * docker build -t dacp .
 * docker run -t -i dacp /bin/bash
 * ./dacp.rb init_puppet
-* puppet apply puppet/create.pp
+* puppet apply puppet/create.pp --templatedir puppet/templates/
 
 
 Project Summary

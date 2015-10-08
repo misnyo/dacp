@@ -30,7 +30,7 @@ ec2_securitygroup { 'web-sg':
     security_group => 'lb-sg',
   },{
     protocol => 'tcp',
-    port     => 22,
+    port     => 222,
     cidr     => '0.0.0.0/0'
   }],
 }
@@ -42,12 +42,12 @@ ec2_securitygroup { 'db-sg':
     security_group => 'web-sg',
   },{
     protocol => 'tcp',
-    port     => 22,
+    port     => 222,
     cidr     => '0.0.0.0/0'
   }],
 }
 
-ec2_instance { ['web-1', 'web-2']:
+ec2_instance { ['web-1']:
   ensure          => present,
   image_id        => $image_id,
   security_groups => ['web-sg'],
@@ -57,7 +57,9 @@ ec2_instance { ['web-1', 'web-2']:
     project    => 'cloud',
     created_by => $::id,
   },
-  key_name	  => $key_name
+  key_name	  => $key_name,
+  #used to set default ssh port to 222 during boot
+  user_data         => template('ssh_user_data.erb')
 }
 
 ec2_instance { 'db-1':
@@ -77,13 +79,15 @@ ec2_instance { 'db-1':
       volume_size => 8,
     }
   ],
-  key_name	  => $key_name
+  key_name	  => $key_name,
+  #used to set default ssh port to 222 during boot
+  user_data         => template('ssh_user_data.erb')
 }
 
 elb_loadbalancer { 'lb-1':
   ensure             => present,
   availability_zones => ['ap-southeast-1b'],
-  instances          => ['web-1', 'web-2'],
+  instances          => ['web-1'],
   listeners          => [{
     protocol           => 'tcp',
     load_balancer_port => 80,
