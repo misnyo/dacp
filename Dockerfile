@@ -14,10 +14,8 @@ RUN \
     bundle install && \
     puppet module install puppetlabs-aws
 
-ADD config /root/dacp/config
 ADD .aws /root/.aws
-ADD dacp.rb /root/dacp/dacp.rb
-ADD dacpinstance.rb /root/dacp/dacpinstance.rb
-ADD puppet /root/dacp/puppet
+ADD dacp /root/dacp
+ADD puppet /root/puppet
 
 RUN cd /root/dacp && ./dacp.rb
