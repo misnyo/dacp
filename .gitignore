@@ -4,3 +4,4 @@ config/config.yaml
 .bundle
 vendor/bundle
 .aws
+puppet/params.pp
