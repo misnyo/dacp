@@ -17,6 +17,7 @@ RUN \
 ADD config /root/dacp/config
 ADD .aws /root/.aws
 ADD dacp.rb /root/dacp/dacp.rb
+ADD dacpinstance.rb /root/dacp/dacpinstance.rb
 ADD puppet /root/dacp/puppet
 
 RUN cd /root/dacp && ./dacp.rb

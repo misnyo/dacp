@@ -6,12 +6,19 @@ require 'yaml'
 require 'optparse'
 require 'pp'
 require 'erb'
+require './dacpinstance'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
 class Dacp
 
-    @@available_commands = ["list", "start", "stop", "init_puppet"]
+    @@available_commands = [
+        "list",
+        "start",
+        "stop",
+        "init_puppet",
+        "enroll_cluster"
+    ]
     @@options = {}
 
     def self.run()
@@ -70,7 +77,7 @@ class Dacp
         puts "No instances found!" unless !resp.reservations.empty?
         for r in resp.reservations
             for i in r.instances
-                puts "#{i.instance_id} - #{i.tags.find {|t| t.key == "Name"}.value} - #{i.state.name}"
+                puts "#{i.instance_id} - #{i.tags.find {|t| t.key == "Name"}.value} - #{i.state.name} - #{i.public_dns_name}"
             end
         end
     end
@@ -119,6 +126,10 @@ class Dacp
         File.open('puppet/params.pp', 'w') do |f|
             f.write template.result(binding)
         end
+    end
+
+    def self.run_enroll_cluster()
+        instance_web = DacpInstance.new(@@ec2, "web-1")
     end
 end
 
