@@ -13,6 +13,9 @@ Docker
 ======
 * cp ~/.aws ./
 * docker build -t dacp .
+* docker run -t -i dacp /bin/bash
+* ./dacp.rb init_puppet
+* puppet apply puppet/create.pp
 
 
 Project Summary

@@ -5,12 +5,13 @@ require 'aws-sdk'
 require 'yaml'
 require 'optparse'
 require 'pp'
+require 'erb'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
 class Dacp
 
-    @@available_commands = ["list", "start", "stop"]
+    @@available_commands = ["list", "start", "stop", "init_puppet"]
     @@options = {}
 
     def self.run()
@@ -107,6 +108,16 @@ class Dacp
             puts "Stopped instance #{@@options[:instance]}"
         rescue Aws::Waiters::Errors::WaiterFailed => error
             puts "Stop failed (#{error.message}) for #{@@options[:instance]}"
+        end
+    end
+
+    def self.run_init_puppet()
+        keyname = @@options[:key_name]
+        image_id = @@options[:image_id]
+        region = @@options[:region]
+        template = ERB.new File.new("puppet/params.erb").read, nil, "%"
+        File.open('puppet/params.pp', 'w') do |f|
+            f.write template.result(binding)
         end
     end
 end

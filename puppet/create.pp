@@ -1,9 +1,11 @@
+import 'params.pp'
+
 Ec2_securitygroup {
-  region => 'ap-southeast-1',
+  region => $region,
 }
 
 Ec2_instance {
-  region            => 'ap-southeast-1',
+  region            => $region,
   availability_zone => 'ap-southeast-1b',
 }
 
@@ -47,7 +49,7 @@ ec2_securitygroup { 'db-sg':
 
 ec2_instance { ['web-1', 'web-2']:
   ensure          => present,
-  image_id        => 'ami-8c1607de',
+  image_id        => $image_id,
   security_groups => ['web-sg'],
   instance_type   => 't2.micro',
   tags            => {
@@ -55,12 +57,12 @@ ec2_instance { ['web-1', 'web-2']:
     project    => 'cloud',
     created_by => $::id,
   },
-  key_name	  => "cheppers"
+  key_name	  => $key_name
 }
 
 ec2_instance { 'db-1':
   ensure          => present,
-  image_id        => 'ami-8c1607de',
+  image_id        => $image_id,
   security_groups => ['db-sg'],
   instance_type   => 't2.micro',
   monitoring      => true,
@@ -75,7 +77,7 @@ ec2_instance { 'db-1':
       volume_size => 8,
     }
   ],
-  key_name	  => "cheppers"
+  key_name	  => $key_name
 }
 
 elb_loadbalancer { 'lb-1':
