@@ -20,7 +20,7 @@ class Dacp
     end
 
     def self.init_aws()
-        @@ec2 = Aws::EC2::Client.new(region: CONFIG['awsconfig']['AWS_REGION'])
+        @@ec2 = Aws::EC2::Client.new(region: @@options[:region])
     end
 
     def self.parse(args)
@@ -52,6 +52,7 @@ class Dacp
         @@options[:security_group] = CONFIG['awsconfig']['SECURITY_GROUP']
         @@options[:key_name] = CONFIG['awsconfig']['KEY_NAME']
         @@options[:image_id] = CONFIG['awsconfig']['IMAGE_ID']
+        @@options[:region] = CONFIG['awsconfig']['AWS_REGION']
     end
 
     def self.run_command(command)
