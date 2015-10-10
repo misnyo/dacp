@@ -17,6 +17,7 @@ class Dacp
         "start",
         "stop",
         "init_puppet",
+        "show_config",
         "enroll_cluster"
     ]
     @@options = {}
@@ -59,8 +60,11 @@ class Dacp
         @@options[:command] = command
         @@options[:security_group] = CONFIG['awsconfig']['SECURITY_GROUP']
         @@options[:key_name] = CONFIG['awsconfig']['KEY_NAME']
+        @@options[:key_location] = CONFIG['awsconfig']['KEY_LOCATION']
         @@options[:image_id] = CONFIG['awsconfig']['IMAGE_ID']
         @@options[:region] = CONFIG['awsconfig']['AWS_REGION']
+        @@options[:ssh_port] = CONFIG['awsconfig']['SSH_PORT']
+        @@options[:login_name] = CONFIG['awsconfig']['LOGIN_NAME']
     end
 
     def self.run_command(command)
@@ -122,14 +126,24 @@ class Dacp
         keyname = @@options[:key_name]
         image_id = @@options[:image_id]
         region = @@options[:region]
-        template = ERB.new File.new("puppet/params.erb").read, nil, "%"
-        File.open('puppet/params.pp', 'w') do |f|
+        template = ERB.new File.new("../puppet/params.erb").read, nil, "%"
+        File.open('../puppet/params.pp', 'w') do |f|
             f.write template.result(binding)
         end
     end
 
     def self.run_enroll_cluster()
-        instance_web = DacpInstance.new(@@ec2, "web-1")
+        self.enroll_web()
+    end
+
+    def self.enroll_web()
+        instance_web1 = DacpInstance.new(@@ec2, @@options, "web-1")
+        #puts "#{instance_web1.public_dns_name} - #{@@login_name} - #{@@options[:key_location]} - #{@@options[:ssh_port]}"
+        instance_web1.apply_puppet("../puppet/web.pp")
+    end
+
+    def self.run_show_config()
+        pp @@options
     end
 end
 

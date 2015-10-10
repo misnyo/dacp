@@ -4,3 +4,5 @@ awsconfig:
     IMAGE_ID: ami-8c1607de
     KEY_NAME: dacp
     KEY_LOCATION: ~/.ssh/dacp.pem
+    SSH_PORT = 222
+    LOGIN_NAME: ubuntu

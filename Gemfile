@@ -1,3 +1,5 @@
 source 'https://rubygems.org'
 gem 'aws-sdk', '~> 2'
 gem 'retries'
+gem 'net-scp'
+gem 'net-ssh'
