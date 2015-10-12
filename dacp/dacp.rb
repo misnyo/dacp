@@ -89,39 +89,13 @@ class Dacp
     end
 
     def self.run_start()
-        raise "Please specify an instance for the command!" unless \
-            @@options[:instance] or CONFIG['awsconfig']['default_instance']
-        puts "Starting instance #{@@options[:instance]} ..."
-        begin
-            @@ec2.start_instances({instance_ids: [@@options[:instance]]})
-        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
-            puts "#{error.message}"
-            return
-        end
-        begin
-            @@ec2.wait_until(:instance_running, instance_ids:[@@options[:instance]])
-            puts "Started instance #{@@options[:instance]}"
-        rescue Aws::Waiters::Errors::WaiterFailed => error
-            puts "Start failed (#{error.message}) for #{@@options[:instance]}"
-        end
+        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+        instance.start()
     end
 
     def self.run_stop()
-        raise "Please specify an instance for the command!" unless \
-            @@options[:instance] or CONFIG['awsconfig']['default_instance']
-        puts "Stopping instance #{@@options[:instance]} ..."
-        begin
-            @@ec2.stop_instances({instance_ids: [@@options[:instance]]})
-        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
-            puts "#{error.message}"
-            return
-        end
-        begin
-            @@ec2.wait_until(:instance_stopped, instance_ids:[@@options[:instance]])
-            puts "Stopped instance #{@@options[:instance]}"
-        rescue Aws::Waiters::Errors::WaiterFailed => error
-            puts "Stop failed (#{error.message}) for #{@@options[:instance]}"
-        end
+        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+        instance.stop()
     end
 
     def self.run_init_puppet()

@@ -5,20 +5,18 @@ class DacpInstance
     def initialize(ec2, options, name)
         @options = options
         @ec2 = ec2
+        @name = name
         resp = @ec2.describe_instances({filters:
             [
                 {
                     name: "tag:Name",
                     values: [name]
-                },
-                {
-                    name: "instance-state-name",
-                    values: ["running"]
                 }
             ]})
         if resp.reservations.length == 1
             if resp.reservations[0].instances.length == 1
                 @instance = resp.reservations[0].instances[0]
+                #puts @instance
                 return
             end
         end
@@ -27,6 +25,46 @@ class DacpInstance
 
     def public_dns_name()
         return @instance.public_dns_name
+    end
+
+    def start()
+        puts "Starting instance #{@name} ..."
+        begin
+            @ec2.start_instances({instance_ids: [@instance.instance_id]})
+        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
+            puts "#{error.message}"
+            return
+        end
+        self.wait_for_start()
+    end
+
+    def wait_for_start()
+        begin
+            @ec2.wait_until(:instance_running, instance_ids:[@instance.instance_id])
+            puts "Started instance #{@name}"
+        rescue Aws::Waiters::Errors::WaiterFailed => error
+            puts "Start failed (#{error.message}) for #{@name}"
+        end
+    end
+
+    def stop()
+        puts "Stopping instance #{@name} ..."
+        begin
+            @ec2.stop_instances({instance_ids: [@instance.instance_id]})
+        rescue Aws::EC2::Errors::InvalidInstanceIDNotFound => error
+            puts "#{error.message}"
+            return
+        end
+        self.wait_for_stop()
+    end
+
+    def wait_for_stop()
+        begin
+            @ec2.wait_until(:instance_running, instance_ids:[@instance.instance_id])
+            puts "Stopped instance #{@name}"
+        rescue Aws::Waiters::Errors::WaiterFailed => error
+            puts "Stop failed (#{error.message}) for #{@name}"
+        end
     end
 
     def copy_file(file)
