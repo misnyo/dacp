@@ -73,13 +73,26 @@ class DacpInstance
         end
     end
 
-    def apply_puppet(file)
-        self.copy_file(file)
+    def install_puppet()
         Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
             res = ssh.exec!("sudo apt-get update && sudo apt-get install -y puppet")
             puts res
+        end
+    end
+
+    def apply_puppet(file)
+        self.copy_file(file)
+        Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
             res = ssh.exec!("sudo puppet apply ~/#{Pathname(file).basename}")
             puts res
         end
     end
+
+    def run_command(command)
+        Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
+            res = ssh.exec!(command)
+            puts res
+        end
+    end
+
 end

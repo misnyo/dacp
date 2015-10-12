@@ -109,13 +109,31 @@ class Dacp
     end
 
     def self.run_enroll_cluster()
+        self.enroll_vms()
         self.enroll_web()
+        self.enroll_db()
     end
 
     def self.enroll_web()
         instance_web1 = DacpInstance.new(@@ec2, @@options, "web-1")
-        #puts "#{instance_web1.public_dns_name} - #{@@login_name} - #{@@options[:key_location]} - #{@@options[:ssh_port]}"
+        instance_web1.wait_for_start()
+        instance_web1.install_puppet()
         instance_web1.apply_puppet("../puppet/web.pp")
+    end
+
+    def self.enroll_db()
+        instance_db= DacpInstance.new(@@ec2, @@options, "db-1")
+        instance_db.wait_for_start()
+        self.run_init_puppet()
+        instance_db.install_puppet()
+        instance_db.run_command("sudo puppet module install puppetlabs-mysql")
+        instance_db.copy_file("../puppet/params.pp")
+        instance_db.apply_puppet("../puppet/db.pp")
+        puts "Mysql server has been installed with root pw: \"#{@@options[:mysql_pw]}\", please save it!"
+    end
+
+    def self.enroll_vms()
+        system "puppet apply ../puppet/create.pp --templatedir ../puppet/templates/"
     end
 
     def self.run_show_config()
