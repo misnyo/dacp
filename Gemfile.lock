@@ -11,7 +11,7 @@ GEM
     jruby-pageant (1.1.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
-    net-ssh (2.5.1)
+    net-ssh (2.4.0)
       jruby-pageant (>= 1.0.2)
     retries (0.0.5)
 
@@ -21,7 +21,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk (~> 2)
   net-scp
-  net-ssh (= 2.5.1)
+  net-ssh (= 2.4.0)
   retries
 
 BUNDLED WITH
