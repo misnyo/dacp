@@ -6,3 +6,4 @@ awsconfig:
     KEY_LOCATION: ~/.ssh/dacp.pem
     SSH_PORT = 222
     LOGIN_NAME: ubuntu
+    MYSQL_PW: notsosecure

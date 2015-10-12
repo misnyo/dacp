@@ -6,6 +6,7 @@ require 'yaml'
 require 'optparse'
 require 'pp'
 require 'erb'
+require 'securerandom'
 require './dacpinstance'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
@@ -65,6 +66,7 @@ class Dacp
         @@options[:region] = CONFIG['awsconfig']['AWS_REGION']
         @@options[:ssh_port] = CONFIG['awsconfig']['SSH_PORT']
         @@options[:login_name] = CONFIG['awsconfig']['LOGIN_NAME']
+        @@options[:mysql_pw] = CONFIG['awsconfig']['MYSQL_PW'] || SecureRandom.hex
     end
 
     def self.run_command(command)
