@@ -59,14 +59,20 @@ class Dacp
                 @@available_commands.include? command
         end
         @@options[:command] = command
-        @@options[:security_group] = CONFIG['awsconfig']['SECURITY_GROUP']
-        @@options[:key_name] = CONFIG['awsconfig']['KEY_NAME']
-        @@options[:key_location] = CONFIG['awsconfig']['KEY_LOCATION']
-        @@options[:image_id] = CONFIG['awsconfig']['IMAGE_ID']
-        @@options[:region] = CONFIG['awsconfig']['AWS_REGION']
-        @@options[:ssh_port] = CONFIG['awsconfig']['SSH_PORT']
-        @@options[:login_name] = CONFIG['awsconfig']['LOGIN_NAME']
-        @@options[:mysql_pw] = CONFIG['awsconfig']['MYSQL_PW'] || SecureRandom.hex
+	#set awsconfig options
+        @@options[:security_group] = CONFIG['AWSCONFIG']['SECURITY_GROUP']
+        @@options[:key_name] = CONFIG['AWSCONFIG']['KEY_NAME']
+        @@options[:key_location] = CONFIG['AWSCONFIG']['KEY_LOCATION']
+        @@options[:image_id] = CONFIG['AWSCONFIG']['IMAGE_ID']
+        @@options[:region] = CONFIG['AWSCONFIG']['AWS_REGION']
+	#set host options
+        @@options[:ssh_port] = CONFIG['HOSTS']['SSH_PORT']
+        @@options[:login_name] = CONFIG['HOSTS']['LOGIN_NAME']
+        #set mysql options
+        @@options[:mysql_pw] = CONFIG['MYSQL']['ROOT_PW'] || SecureRandom.hex
+        @@options[:mysql_user] = CONFIG['MYSQL']['USER']
+        @@options[:mysql_user_pw] = CONFIG['MYSQL']['USER_PW'] || SecureRandom.hex
+        @@options[:mysql_db] = CONFIG['MYSQL']['DB']
     end
 
     def self.run_command(command)

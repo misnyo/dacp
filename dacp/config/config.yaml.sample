@@ -1,9 +1,14 @@
-awsconfig:
+AWSCONFIG:
     SECURITY_GROUP: dacp
     AWS_REGION: ap-southeast-1
     IMAGE_ID: ami-8c1607de
     KEY_NAME: dacp
     KEY_LOCATION: ~/.ssh/dacp.pem
+HOSTS:
     SSH_PORT: 222
     LOGIN_NAME: ubuntu
-    MYSQL_PW: notsosecure
+MYSQL:
+    ROOT_PW: notsosecure
+    USER: drupal
+    USER_PW: notsosecure
+    DB: drupal
