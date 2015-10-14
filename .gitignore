@@ -5,3 +5,4 @@ dacp/config/config.yaml
 vendor/bundle
 .aws
 puppet/params.pp
+puppet/drupalparams.pp

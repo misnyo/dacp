@@ -21,3 +21,7 @@ mysql::db { $mysql_db:
   password => $mysql_user_pw,
   host     => '%',
 } 
+
+exec { 'restart mysql':
+  command => "service mysql restart",
+}

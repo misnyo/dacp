@@ -9,6 +9,11 @@ package { 'apache2':
   ensure => installed,
 }
 
+package { 'sendmail':
+  require => Exec['apt-update'],
+  ensure => installed,
+}
+
 service { 'apache2':
   ensure => running,
 }
@@ -39,6 +44,11 @@ package { 'mysql-client':
   ensure => installed,
 }
 
+package { 'curl':
+  require => Exec['apt-update'],
+  ensure => installed,
+}
+
 file { '/var/www/html/info.php':
   ensure => file,
   content => '<?php  phpinfo(); ?>',
@@ -46,40 +56,41 @@ file { '/var/www/html/info.php':
 } 
 
 exec { 'install composer':
-  command => 'curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer',
+  command => '/usr/bin/curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer',
   creates => '/usr/local/bin/composer',
-  require => Package['php5'],
+  require => [ Package['php5'], Package['curl'] ],
   user => 'ubuntu',
 }
 
 exec { 'install drush':
-  command => 'composer global require drush/drush:7.*',
-  creates => '~/.composer/vendor/bin/drush',
+  command => '/usr/local/bin/composer global require drush/drush:7.*',
+  creates => '/home/ubuntu/.composer/vendor/bin/drush',
   require => Exec['install composer'],
   user => 'ubuntu',
+  environment => ["HOME=/home/ubuntu"],
+  path    => '/usr/bin:/usr/local/bin:/home/ubuntu/.composer/vendor/bin/',
+  cwd => '/home/ubuntu',
 }
 
 exec { 'export composer':
-  command => 'echo "export PATH=\\"\\$HOME/.composer/vendor/bin:\\$PATH\\"' >> ~/.bash_profile',
-  onlyif => 'grep composer ~/.bash_profile',
+  command => '/bin/echo "export PATH=\\"\\$HOME/.composer/vendor/bin:\\$PATH\\" >> /home/ubuntu/.bash_profile',
+  onlyif => '/bin/grep composer /home/ubuntu/.bash_profile',
   require => Exec['install composer'],
   user => 'ubuntu',
 }
 
 exec { 'download drupal':
-  command => 'drush dl --bare --destination="drupal" drupal-7.x',
+  command => '/home/ubuntu/.composer/vendor/bin/drush dl -y --destination="/var/www"  --drupal-project-rename="html" drupal-7.x',
   require => Exec['install drush'],
-  user => 'ubuntu',
 }
 
-exec { 'move drupal':
-  command => 'sudo mv drupal/* /var/www/html'
-  require => Exec['dowload drupal'],
-  user => 'ubuntu',
-}
+#exec { 'move drupal':
+#  command => '/bin/mv /home/ubuntu/drupal/* /var/www/html',
+#  require => Exec['download drupal'],
+#}
 
 exec { 'install drupal':
-  command => "drush site-install standard -y --account-name=admin --account-pass=admin --db-url=$drupal_db_url",
-  require => Exec['move drupal',
-  user => 'ubuntu'
+  command => "/home/ubuntu/.composer/vendor/bin/drush site-install standard -y --account-name=admin --account-pass=admin --db-url=$drupal_db_url --account-mail=misnyo@msinyo.eu",
+  require => [ Exec['download drupal'], Package['sendmail'] ],
+  cwd => '/var/www/html',
 }
