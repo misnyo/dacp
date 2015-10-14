@@ -7,6 +7,7 @@ Quick run
 * apt-get install puppet ruby
 * gem install bundler
 * bundle install --path vendor/bundle
+* puppet module install puppetlabs-aws
 * ./dacp.rb
 
 Docker
