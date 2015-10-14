@@ -19,7 +19,10 @@ class Dacp
         "stop",
         "init_puppet",
         "show_config",
-        "enroll_cluster"
+        "enroll_cluster",
+        "enroll_vms",
+        "enroll_db",
+        "enroll_web"
     ]
     @@options = {}
 
@@ -105,30 +108,38 @@ class Dacp
     end
 
     def self.run_init_puppet()
-        keyname = @@options[:key_name]
-        image_id = @@options[:image_id]
-        region = @@options[:region]
+        @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
         template = ERB.new File.new("../puppet/params.erb").read, nil, "%"
         File.open('../puppet/params.pp', 'w') do |f|
             f.write template.result(binding)
         end
     end
 
-    def self.run_enroll_cluster()
-	self.run_init_puppet()
-        self.enroll_vms()
-        self.enroll_web()
-        self.enroll_db()
+    def self.init_puppet_drupal()
+        @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
+        template = ERB.new File.new("../puppet/drupalparams.erb").read, nil, "%"
+        File.open('../puppet/drupalparams.pp', 'w') do |f|
+            f.write template.result(binding)
+        end
     end
 
-    def self.enroll_web()
+    def self.run_enroll_cluster()
+	self.run_init_puppet()
+        self.run_enroll_vms()
+        self.run_enroll_db()
+        self.run_enroll_web()
+    end
+
+    def self.run_enroll_web()
+        self.init_puppet_drupal()
         instance_web1 = DacpInstance.new(@@ec2, @@options, "web-1")
         instance_web1.wait_for_start()
         instance_web1.install_puppet()
+        instance_db.copy_file("../puppet/drupalparams.pp")
         instance_web1.apply_puppet("../puppet/web.pp")
     end
 
-    def self.enroll_db()
+    def self.run_enroll_db()
         instance_db= DacpInstance.new(@@ec2, @@options, "db-1")
         instance_db.wait_for_start()
         self.run_init_puppet()
@@ -136,10 +147,9 @@ class Dacp
         instance_db.run_command("sudo puppet module install puppetlabs-mysql")
         instance_db.copy_file("../puppet/params.pp")
         instance_db.apply_puppet("../puppet/db.pp")
-        puts "Mysql server has been installed with root pw: \"#{@@options[:mysql_pw]}\", please save it!"
     end
 
-    def self.enroll_vms()
+    def self.run_enroll_vms()
         system "puppet apply ../puppet/create.pp --templatedir ../puppet/templates/"
     end
 
