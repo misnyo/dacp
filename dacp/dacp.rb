@@ -109,6 +109,7 @@ class Dacp
     end
 
     def self.run_enroll_cluster()
+	self.run_init_puppet()
         self.enroll_vms()
         self.enroll_web()
         self.enroll_db()
