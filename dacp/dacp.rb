@@ -11,6 +11,8 @@ require './dacpinstance'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
+##
+#Main controller class
 class Dacp
 
     @@available_commands = [
@@ -26,6 +28,8 @@ class Dacp
     ]
     @@options = {}
 
+    ##
+    #Runs the command specified in CLI argument
     def self.run()
         self.parse(ARGV)
         self.init_aws()

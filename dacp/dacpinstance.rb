@@ -1,7 +1,12 @@
 require 'pp'
 require 'net/scp'
 
+##
+#Represents an AWS instance
 class DacpInstance
+
+    ##
+    #Queries instance data from AWS
     def initialize(ec2, options, name)
         @options = options
         @ec2 = ec2
