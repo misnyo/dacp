@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Dacp by misnyo</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Dacp</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/misnyo/dacp">View the Project on GitHub <small>misnyo/dacp</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/misnyo/dacp/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/misnyo/dacp/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/misnyo/dacp">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="dacp" class="anchor" href="#dacp" aria-hidden="true"><span class="octicon octicon-link"></span></a>DACP</h1>
+
+<p>Drupal hosting AWS scripts</p>
+
+<h1>
+<a id="quick-run" class="anchor" href="#quick-run" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick run</h1>
+
+<ul>
+<li>apt-get install puppet ruby</li>
+<li>gem install bundler</li>
+<li>bundle install --path vendor/bundle</li>
+<li>puppet module install puppetlabs-aws</li>
+<li>./dacp.rb</li>
+</ul>
+
+<h1>
+<a id="docker" class="anchor" href="#docker" aria-hidden="true"><span class="octicon octicon-link"></span></a>Docker</h1>
+
+<ul>
+<li>cp ~/.aws ./</li>
+<li>docker build -t dacp .</li>
+<li>docker run -t -i dacp /bin/bash</li>
+<li>./dacp.rb init_puppet</li>
+<li>puppet apply puppet/create.pp --templatedir puppet/templates/</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/misnyo">misnyo</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
