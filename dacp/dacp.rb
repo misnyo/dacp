@@ -42,6 +42,8 @@ class Dacp
         @@ec2 = Aws::EC2::Client.new(region: @@options[:region])
     end
 
+    ##
+    #Parse arguments
     def self.parse(args)
         options = {}
         OptionParser.new do |opts|
