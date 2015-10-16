@@ -36,6 +36,8 @@ class Dacp
         self.run_command(@@options[:command])
     end
 
+    ##
+    #Connection to AWS EC2 client
     def self.init_aws()
         @@ec2 = Aws::EC2::Client.new(region: @@options[:region])
     end
