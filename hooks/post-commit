@@ -1,0 +1,4 @@
+#!/bin/bash
+bundle exec rdoc -o ../dacp-gh-pages/doc dacp
+MSG=$(git log -1 --pretty=%B)
+cd ../dacp-gh-pages && git add . && git commit -m"[doc]$MSG"
