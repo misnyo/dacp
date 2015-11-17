@@ -4,7 +4,7 @@ Drupal hosting AWS scripts
 
 Quick run
 ============
-* apt-get install puppet ruby
+* apt-get install puppet ruby ruby-dev
 * gem install bundler
 * bundle install --path vendor/bundle
 * puppet module install puppetlabs-aws
@@ -17,6 +17,10 @@ Docker
 * docker run -t -i dacp /bin/bash
 * ./dacp.rb init_puppet
 * puppet apply puppet/create.pp --templatedir puppet/templates/
+
+Development
+===========
+* hooks/apply.sh applies automatic documentation update on every commit to ../dacp-gh-pages/doc for github pages
 
 
 Project Summary
