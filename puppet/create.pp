@@ -13,7 +13,7 @@ Elb_loadbalancer {
   region => 'ap-southeast-1',
 }
 
-ec2_securitygroup { 'lb-sg':
+ec2_securitygroup { "${prefix}lb-sg":
   ensure      => present,
   description => 'Security group for load balancer',
   ingress     => [{
@@ -23,11 +23,11 @@ ec2_securitygroup { 'lb-sg':
   }],
 }
 
-ec2_securitygroup { 'web-sg':
+ec2_securitygroup { "${prefix}web-sg":
   ensure      => present,
   description => 'Security group for web servers',
   ingress     => [{
-    security_group => 'lb-sg',
+    security_group => "${prefix}lb-sg",
   },{
     protocol => 'tcp',
     port     => 222,
@@ -35,11 +35,11 @@ ec2_securitygroup { 'web-sg':
   }],
 }
 
-ec2_securitygroup { 'db-sg':
+ec2_securitygroup { "${prefix}db-sg":
   ensure      => present,
   description => 'Security group for database servers',
   ingress     => [{
-    security_group => 'web-sg',
+    security_group => "${prefix}web-sg",
   },{
     protocol => 'tcp',
     port     => 222,
@@ -47,10 +47,10 @@ ec2_securitygroup { 'db-sg':
   }],
 }
 
-ec2_instance { ['web-1']:
+ec2_instance { ["${prefix}web-1"]:
   ensure          => present,
   image_id        => $image_id,
-  security_groups => ['web-sg'],
+  security_groups => ["${prefix}web-sg"],
   instance_type   => 't2.micro',
   tags            => {
     department => 'engineering',
@@ -62,10 +62,10 @@ ec2_instance { ['web-1']:
   user_data         => template('ssh_user_data.erb')
 }
 
-ec2_instance { 'db-1':
+ec2_instance { "${prefix}db-1":
   ensure          => present,
   image_id        => $image_id,
-  security_groups => ['db-sg'],
+  security_groups => ["${prefix}db-sg"],
   instance_type   => 't2.micro',
   monitoring      => true,
   tags            => {
@@ -84,10 +84,10 @@ ec2_instance { 'db-1':
   user_data         => template('ssh_user_data.erb')
 }
 
-elb_loadbalancer { 'lb-1':
+elb_loadbalancer { "${prefix}lb-1":
   ensure             => present,
   availability_zones => ['ap-southeast-1b'],
-  instances          => ['web-1'],
+  instances          => ["${prefix}web-1"],
   listeners          => [{
     protocol           => 'tcp',
     load_balancer_port => 80,

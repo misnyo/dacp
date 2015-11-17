@@ -28,6 +28,12 @@ class DacpInstance
     end
 
     ##
+    #Private dns name
+    def private_dns_name()
+        return @instance.private_dns_name
+    end
+
+    ##
     #Public dns name
     def public_dns_name()
         return @instance.public_dns_name
