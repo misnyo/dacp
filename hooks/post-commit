@@ -1,15 +1,13 @@
 #!/bin/bash
-PWD=$(pwd)
-git stash save -u
-bundle exec rdoc -o ../dacp-gh-pages/doc dacp
-cd ../dacp-gh-pages
-CHANGED=$(git ls-files -m)
-if [ "doc/created.rid" != "$CHANGED" ]; then
-    MSG=$(git log -1 --pretty=%B)
-    git add . && git commit -m"[doc]$MSG"
-    echo "Documentation updated commited";
-else
-    echo "Documentation unchanged";
+MSG=$(git log -1 --pretty=%B)
+if [[ "$MSG" =~ "\[doc\]" ]]; then
+    bundle exec rdoc -o ../dacp-gh-pages/doc dacp
+    cd ../dacp-gh-pages
+    CHANGED=$(git ls-files -m)
+    if [ "doc/created.rid" != "$CHANGED" ]; then
+        git add . && git commit -m"$MSG"
+        echo "Documentation updated commited";
+    else
+        echo "Documentation unchanged";
+    fi
 fi
-cd "$PWD"
-git stash pop stash@{0}
