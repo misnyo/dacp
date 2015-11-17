@@ -99,6 +99,8 @@ class Dacp
         self.send "run_" + command
     end
 
+    ##
+    #List all instances in configured region
     def self.run_list()
         resp = @@ec2.describe_instances()
         puts "No instances found!" unless !resp.reservations.empty?
@@ -109,16 +111,22 @@ class Dacp
         end
     end
 
+    ##
+    #Start instance specified in options
     def self.run_start()
         instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
         instance.start()
     end
 
+    ##
+    #Stop instance specified in options
     def self.run_stop()
         instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
         instance.stop()
     end
 
+    ##
+    #Initialize puppet parameter templates
     def self.run_init_puppet()
         @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
         template = ERB.new File.new("../puppet/params.erb").read, nil, "%"
@@ -127,6 +135,8 @@ class Dacp
         end
     end
 
+    ##
+    #Initialize puppet drupal parameter template
     def self.init_puppet_drupal()
         @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
         template = ERB.new File.new("../puppet/drupalparams.erb").read, nil, "%"
@@ -135,6 +145,13 @@ class Dacp
         end
     end
 
+    ##
+    #Enroll whole drupal cluster
+    #includes:
+    # - run_init_puppet
+    # - run_init_vms
+    # - run_init_db
+    # - run_init_web
     def self.run_enroll_cluster()
 	self.run_init_puppet()
         self.run_enroll_vms()
@@ -142,6 +159,8 @@ class Dacp
         self.run_enroll_web()
     end
 
+    ##
+    #Enroll web instance(s)
     def self.run_enroll_web()
         self.init_puppet_drupal()
         instance_web1 = DacpInstance.new(@@ec2, @@options, "web-1")
@@ -151,6 +170,8 @@ class Dacp
         instance_web1.apply_puppet("../puppet/web.pp")
     end
 
+    ##
+    #Enroll database instance(s)
     def self.run_enroll_db()
         instance_db= DacpInstance.new(@@ec2, @@options, "db-1")
         instance_db.wait_for_start()
@@ -161,10 +182,14 @@ class Dacp
         instance_db.apply_puppet("../puppet/db.pp")
     end
 
+    ##
+    #Create AWS instances for cluster with puppet
     def self.run_enroll_vms()
         system "puppet apply ../puppet/create.pp --templatedir ../puppet/templates/"
     end
 
+    ##
+    #Show configuration
     def self.run_show_config()
         pp @@options
     end
