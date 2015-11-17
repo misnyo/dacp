@@ -54,6 +54,8 @@ class DacpInstance
         end
     end
 
+    ##
+    #Stop instance
     def stop()
         puts "Stopping instance #{@name} ..."
         begin
