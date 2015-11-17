@@ -1,4 +1,5 @@
 #!/bin/bash
+git stash save -u
 bundle exec rdoc -o ../dacp-gh-pages/doc dacp
 cd ../dacp-gh-pages
 CHANGED=$(git ls-files -m)
@@ -9,3 +10,4 @@ if [ "doc/created.rid" != "$CHANGED" ]; then
 else
     echo "Documentation unchanged";
 fi
+git stash pop stash@{0}
