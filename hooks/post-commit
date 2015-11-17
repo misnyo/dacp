@@ -1,6 +1,6 @@
 #!/bin/bash
 MSG=$(git log -1 --pretty=%B)
-if [[ "$MSG" =~ "\[doc\]" ]]; then
+if [[ $MSG =~ \[doc\] ]]; then
     bundle exec rdoc -o ../dacp-gh-pages/doc dacp
     cd ../dacp-gh-pages
     CHANGED=$(git ls-files -m)
