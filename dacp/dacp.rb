@@ -15,6 +15,8 @@ CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 #Main controller class
 class Dacp
 
+    ##
+    #List of available CLI commands
     @@available_commands = [
         "list",
         "start",
