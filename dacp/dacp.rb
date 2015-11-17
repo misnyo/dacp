@@ -58,6 +58,10 @@ class Dacp
                 @@options[:instance] = instance
             end
 
+            opts.on("-p PREFIX", "--prefix=PREFIX", "Instance prefix") do |prefix|
+                @@options[:instance_prefix] = prefix
+            end
+
             opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
                 @@options[:verbose] = v
             end
@@ -81,6 +85,7 @@ class Dacp
 	#set host options
         @@options[:ssh_port] = CONFIG['HOSTS']['SSH_PORT']
         @@options[:login_name] = CONFIG['HOSTS']['LOGIN_NAME']
+        @@options[:instance_prefix] || CONFIG['HOSTS']['INSTANCE_PREFIX']
         #set mysql options
         @@options[:mysql_pw] = CONFIG['MYSQL']['ROOT_PW'] || SecureRandom.hex
         @@options[:mysql_user] = CONFIG['MYSQL']['USER']
@@ -137,7 +142,7 @@ class Dacp
     ##
     #Initialize puppet drupal parameter template
     def self.init_puppet_drupal()
-        @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
+        @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}db-1").private_dns_name
         template = ERB.new File.new("../puppet/drupalparams.erb").read, nil, "%"
         File.open('../puppet/drupalparams.pp', 'w') do |f|
             f.write template.result(binding)
@@ -162,7 +167,7 @@ class Dacp
     #Enroll web instance(s)
     def self.run_enroll_web()
         self.init_puppet_drupal()
-        instance_web1 = DacpInstance.new(@@ec2, @@options, "web-1")
+        instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
         instance_web1.wait_for_start()
         instance_web1.install_puppet()
         instance_web1.copy_file("../puppet/drupalparams.pp")
@@ -172,7 +177,7 @@ class Dacp
     ##
     #Enroll database instance(s)
     def self.run_enroll_db()
-        instance_db= DacpInstance.new(@@ec2, @@options, "db-1")
+        instance_db= DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}db-1")
         instance_db.wait_for_start()
         self.run_init_puppet()
         instance_db.install_puppet()
