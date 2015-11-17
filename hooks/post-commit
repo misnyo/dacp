@@ -1,4 +1,11 @@
 #!/bin/bash
 bundle exec rdoc -o ../dacp-gh-pages/doc dacp
-MSG=$(git log -1 --pretty=%B)
-cd ../dacp-gh-pages && git add . && git commit -m"[doc]$MSG"
+cd ../dacp-gh-pages
+CHANGED=$(git ls-files -m)
+if [ "doc/created.rid" != "$CHANGED" ]; then
+    MSG=$(git log -1 --pretty=%B)
+    git add . && git commit -m"[doc]$MSG"
+    echo "Documentation updated commited";
+else
+    echo "Documentation unchanged";
+fi
