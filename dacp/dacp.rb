@@ -128,7 +128,6 @@ class Dacp
     ##
     #Initialize puppet parameter templates
     def self.run_init_puppet()
-        @@options[:mysql_host] = DacpInstance.new(@@ec2, @@options, "db-1").public_dns_name
         template = ERB.new File.new("../puppet/params.erb").read, nil, "%"
         File.open('../puppet/params.pp', 'w') do |f|
             f.write template.result(binding)
