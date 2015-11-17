@@ -84,13 +84,20 @@ exec { 'download drupal':
   require => Exec['install drush'],
 }
 
-#exec { 'move drupal':
-#  command => '/bin/mv /home/ubuntu/drupal/* /var/www/html',
-#  require => Exec['download drupal'],
-#}
+exec { 'chown drupal':
+  command => '/usr/bin/sudo /bin/chown -R ubuntu:www-data /var/www/html',
+  require => Exec['download drupal'],
+  cwd => '/var/www/html',
+}
+
+exec { 'chmod drupal':
+  command => '/usr/bin/sudo /bin/chmod -R 774 /var/www/html',
+  require => Exec['chown drupal'],
+  cwd => '/var/www/html',
+}
 
 exec { 'install drupal':
   command => "/home/ubuntu/.composer/vendor/bin/drush site-install standard -y --account-name=admin --account-pass=admin --db-url=$drupal_db_url --account-mail=misnyo@msinyo.eu",
-  require => [ Exec['download drupal'], Package['sendmail'] ],
+  require => [ Exec['chmod drupal'], Package['sendmail'] ],
   cwd => '/var/www/html',
 }
