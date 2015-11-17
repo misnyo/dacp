@@ -206,13 +206,13 @@
 
           <div class="method-description">
             
-            
+            <p>Initialize puppet drupal parameter template</p>
             
 
             
             <div class="method-source-code" id="init_puppet_drupal-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 130</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 140</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">init_puppet_drupal</span>()
     <span class="ruby-identifier">@@options</span>[<span class="ruby-value">:mysql_host</span>] = <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-string">&quot;db-1&quot;</span>).<span class="ruby-identifier">public_dns_name</span>
     <span class="ruby-identifier">template</span> = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;../puppet/drupalparams.erb&quot;</span>).<span class="ruby-identifier">read</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-string">&quot;%&quot;</span>
@@ -386,13 +386,18 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Enroll whole drupal cluster includes:</p>
+
+<pre>- run_init_puppet
+- run_init_vms
+- run_init_db
+- run_init_web</pre>
             
 
             
             <div class="method-source-code" id="run_enroll_cluster-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 138</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 155</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_enroll_cluster</span>()
     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_init_puppet</span>()
     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_enroll_vms</span>()
@@ -422,13 +427,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Enroll database instance(s)</p>
             
 
             
             <div class="method-source-code" id="run_enroll_db-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 154</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 175</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_enroll_db</span>()
     <span class="ruby-identifier">instance_db</span>= <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-string">&quot;db-1&quot;</span>)
     <span class="ruby-identifier">instance_db</span>.<span class="ruby-identifier">wait_for_start</span>()
@@ -461,13 +466,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Create AWS instances for cluster with puppet</p>
             
 
             
             <div class="method-source-code" id="run_enroll_vms-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 164</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 187</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_enroll_vms</span>()
     <span class="ruby-identifier">system</span> <span class="ruby-string">&quot;puppet apply ../puppet/create.pp --templatedir ../puppet/templates/&quot;</span>
 <span class="ruby-keyword">end</span></pre>
@@ -494,13 +499,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Enroll web instance(s)</p>
             
 
             
             <div class="method-source-code" id="run_enroll_web-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 145</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 164</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_enroll_web</span>()
     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">init_puppet_drupal</span>()
     <span class="ruby-identifier">instance_web1</span> = <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-string">&quot;web-1&quot;</span>)
@@ -532,13 +537,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Initialize puppet parameter templates</p>
             
 
             
             <div class="method-source-code" id="run_init_puppet-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 122</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 130</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_init_puppet</span>()
     <span class="ruby-identifier">@@options</span>[<span class="ruby-value">:mysql_host</span>] = <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-string">&quot;db-1&quot;</span>).<span class="ruby-identifier">public_dns_name</span>
     <span class="ruby-identifier">template</span> = <span class="ruby-constant">ERB</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;../puppet/params.erb&quot;</span>).<span class="ruby-identifier">read</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-string">&quot;%&quot;</span>
@@ -569,13 +574,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>List all instances in configured region</p>
             
 
             
             <div class="method-source-code" id="run_list-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 102</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 104</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_list</span>()
     <span class="ruby-identifier">resp</span> = <span class="ruby-identifier">@@ec2</span>.<span class="ruby-identifier">describe_instances</span>()
     <span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;No instances found!&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-operator">!</span><span class="ruby-identifier">resp</span>.<span class="ruby-identifier">reservations</span>.<span class="ruby-identifier">empty?</span>
@@ -608,13 +613,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Show configuration</p>
             
 
             
             <div class="method-source-code" id="run_show_config-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 168</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 193</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_show_config</span>()
     <span class="ruby-identifier">pp</span> <span class="ruby-identifier">@@options</span>
 <span class="ruby-keyword">end</span></pre>
@@ -641,13 +646,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Start instance specified in options</p>
             
 
             
             <div class="method-source-code" id="run_start-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 112</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 116</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_start</span>()
     <span class="ruby-identifier">instance</span> = <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-identifier">@@options</span>[<span class="ruby-value">:instance</span>])
     <span class="ruby-identifier">instance</span>.<span class="ruby-identifier">start</span>()
@@ -675,13 +680,13 @@ href="Dacp.html#method-c-run_list">run_list</a></p>
 
           <div class="method-description">
             
-            
+            <p>Stop instance specified in options</p>
             
 
             
             <div class="method-source-code" id="run_stop-source">
 <pre>
-<span class="ruby-comment"># File dacp/dacp.rb, line 117</span>
+<span class="ruby-comment"># File dacp/dacp.rb, line 123</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">run_stop</span>()
     <span class="ruby-identifier">instance</span> = <span class="ruby-constant">DacpInstance</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">@@ec2</span>, <span class="ruby-identifier">@@options</span>, <span class="ruby-identifier">@@options</span>[<span class="ruby-value">:instance</span>])
     <span class="ruby-identifier">instance</span>.<span class="ruby-identifier">stop</span>()
