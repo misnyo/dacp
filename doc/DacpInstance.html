@@ -203,7 +203,7 @@
 
           
           <div class="method-source-code" id="apply_puppet-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 90</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 92</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">apply_puppet</span>(<span class="ruby-identifier">file</span>)
     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">copy_file</span>(<span class="ruby-identifier">file</span>)
     <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">public_dns_name</span>, <span class="ruby-ivar">@options</span>[<span class="ruby-value">:login_name</span>], {<span class="ruby-value">:keys</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:key_location</span>], <span class="ruby-value">:port</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:ssh_port</span>]}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>
@@ -240,7 +240,7 @@
 
           
           <div class="method-source-code" id="copy_file-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 77</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 79</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">copy_file</span>(<span class="ruby-identifier">file</span>)
     <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SCP</span>.<span class="ruby-identifier">start</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">public_dns_name</span>, <span class="ruby-ivar">@options</span>[<span class="ruby-value">:login_name</span>], {<span class="ruby-value">:keys</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:key_location</span>], <span class="ruby-value">:port</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:ssh_port</span>]}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">scp</span><span class="ruby-operator">|</span>
         <span class="ruby-identifier">scp</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-string">'.'</span>)
@@ -275,7 +275,7 @@
 
           
           <div class="method-source-code" id="install_puppet-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 83</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 85</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">install_puppet</span>()
     <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">public_dns_name</span>, <span class="ruby-ivar">@options</span>[<span class="ruby-value">:login_name</span>], {<span class="ruby-value">:keys</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:key_location</span>], <span class="ruby-value">:port</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:ssh_port</span>]}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>
         <span class="ruby-identifier">res</span> = <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec!</span>(<span class="ruby-string">&quot;sudo apt-get update &amp;&amp; sudo apt-get install -y puppet&quot;</span>)
@@ -344,7 +344,7 @@
 
           
           <div class="method-source-code" id="run_command-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 98</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 100</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">run_command</span>(<span class="ruby-identifier">command</span>)
     <span class="ruby-constant">Net</span><span class="ruby-operator">::</span><span class="ruby-constant">SSH</span>.<span class="ruby-identifier">start</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">public_dns_name</span>, <span class="ruby-ivar">@options</span>[<span class="ruby-value">:login_name</span>], {<span class="ruby-value">:keys</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:key_location</span>], <span class="ruby-value">:port</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:ssh_port</span>]}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">ssh</span><span class="ruby-operator">|</span>
         <span class="ruby-identifier">res</span> = <span class="ruby-identifier">ssh</span>.<span class="ruby-identifier">exec!</span>(<span class="ruby-identifier">command</span>)
@@ -414,13 +414,13 @@
 
         <div class="method-description">
           
-          
+          <p>Stop instance</p>
           
           
 
           
           <div class="method-source-code" id="stop-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 57</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 59</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">stop</span>()
     <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Stopping instance #{@name} ...&quot;</span>
     <span class="ruby-keyword">begin</span>
@@ -498,7 +498,7 @@
 
           
           <div class="method-source-code" id="wait_for_stop-source">
-            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 68</span>
+            <pre><span class="ruby-comment"># File dacp/dacpinstance.rb, line 70</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">wait_for_stop</span>()
     <span class="ruby-keyword">begin</span>
         <span class="ruby-ivar">@ec2</span>.<span class="ruby-identifier">wait_until</span>(<span class="ruby-value">:instance_running</span>, <span class="ruby-identifier">instance_ids</span>[[<span class="ruby-ivar">@instance</span>.<span class="ruby-identifier">instance_id</span>])
