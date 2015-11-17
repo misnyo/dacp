@@ -27,6 +27,8 @@ class DacpInstance
         puts "instance error!"
     end
 
+    ##
+    #Public dns name
     def public_dns_name()
         return @instance.public_dns_name
     end
