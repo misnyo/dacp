@@ -21,7 +21,6 @@ class DacpInstance
         if resp.reservations.length == 1
             if resp.reservations[0].instances.length == 1
                 @instance = resp.reservations[0].instances[0]
-                #puts @instance
                 return
             end
         end
@@ -45,6 +44,8 @@ class DacpInstance
         self.wait_for_start()
     end
 
+    ##
+    #Wait until instance_running
     def wait_for_start()
         begin
             @ec2.wait_until(:instance_running, instance_ids:[@instance.instance_id])
@@ -67,6 +68,8 @@ class DacpInstance
         self.wait_for_stop()
     end
 
+    ##
+    #Wait until instance_running
     def wait_for_stop()
         begin
             @ec2.wait_until(:instance_running, instance_ids:[@instance.instance_id])
@@ -76,12 +79,16 @@ class DacpInstance
         end
     end
 
+    ##
+    #Scp given file to instance home
     def copy_file(file)
         Net::SCP.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |scp|
             scp.upload(file, '.')
         end
     end
 
+    ##
+    #Install puppet
     def install_puppet()
         Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
             res = ssh.exec!("sudo apt-get update && sudo apt-get install -y puppet")
@@ -89,6 +96,8 @@ class DacpInstance
         end
     end
 
+    ##
+    #Apply local puppet file on server
     def apply_puppet(file)
         self.copy_file(file)
         Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
@@ -97,6 +106,8 @@ class DacpInstance
         end
     end
 
+    ##
+    #Run remote command
     def run_command(command)
         Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
             res = ssh.exec!(command)
