@@ -32,6 +32,8 @@ class DacpInstance
         return @instance.public_dns_name
     end
 
+    ##
+    #Start instance
     def start()
         puts "Starting instance #{@name} ..."
         begin
