@@ -88,6 +88,8 @@ class Dacp
         @@options[:mysql_db] = CONFIG['MYSQL']['DB']
     end
 
+    ##
+    #Runs function "run_" + command, defaulting to run_list
     def self.run_command(command)
         if !command
             command = "list"
