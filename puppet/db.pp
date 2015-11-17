@@ -12,7 +12,8 @@ class { '::mysql::server':
       'max_connections' => '1024',
       'bind_address' => '0.0.0.0',
     }
-  }
+  },
+  restart => true,
 }
 
 #create db for drupal
@@ -23,5 +24,6 @@ mysql::db { $mysql_db:
 } 
 
 exec { 'restart mysql':
-  command => "service mysql restart",
+  command => "/usr/sbin/service mysql restart",
+  require => [ Class['::mysql::server'], ::Mysql::Db["$mysql_db"] ],
 }
