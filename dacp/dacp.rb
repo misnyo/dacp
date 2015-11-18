@@ -8,6 +8,7 @@ require 'pp'
 require 'erb'
 require 'securerandom'
 require './dacpinstance'
+require './dacpsg'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
@@ -172,6 +173,7 @@ class Dacp
         self.init_puppet_drupal()
         instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
         instance_web1.wait_for_start()
+        instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
         instance_web1.install_puppet()
         instance_web1.copy_file("../puppet/drupalparams.pp")
         instance_web1.apply_puppet("../puppet/web.pp")
@@ -182,6 +184,7 @@ class Dacp
     def self.run_enroll_db()
         instance_db= DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}db-1")
         instance_db.wait_for_start()
+        instance_db= DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}db-1")
         self.run_init_puppet()
         instance_db.install_puppet()
         instance_db.run_command("sudo puppet module install puppetlabs-mysql")
