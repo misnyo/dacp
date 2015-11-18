@@ -40,6 +40,12 @@ class DacpInstance
     end
 
     ##
+    #Instance id
+    def instance_id()
+        return @instance.instance_id
+    end
+
+    ##
     #Start instance
     def start()
         puts "Starting instance #{@name} ..."
@@ -90,36 +96,51 @@ class DacpInstance
     ##
     #Scp given file to instance home
     def copy_file(file)
-        Net::SCP.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |scp|
-            scp.upload(file, '.')
+        success = false
+        cnt = 0
+        while not success and cnt < 10 do
+            begin
+                Net::SCP.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port], :timeout => 30}) do |scp|
+                    res = scp.upload(file, '.')
+                    success = true
+                end
+            rescue Errno::ECONNREFUSED
+                cnt += 1
+                puts "Retrying scp #{cnt}th time for #{self.public_dns_name}"
+                sleep(10)
+            end
         end
     end
 
     ##
     #Install puppet
     def install_puppet()
-        Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
-            res = ssh.exec!("sudo apt-get update && sudo apt-get install -y puppet")
-            puts res
-        end
+        self.run_command("sudo apt-get update && sudo apt-get install -y puppet")
     end
 
     ##
     #Apply local puppet file on server
     def apply_puppet(file)
         self.copy_file(file)
-        Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
-            res = ssh.exec!("sudo puppet apply ~/#{Pathname(file).basename}")
-            puts res
-        end
+        self.run_command("sudo puppet apply ~/#{Pathname(file).basename}")
     end
 
     ##
     #Run remote command
     def run_command(command)
-        Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
-            res = ssh.exec!(command)
-            puts res
+        success = false
+        cnt = 0
+        while not success and cnt < 10 do
+            begin
+                Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
+                    res = ssh.exec!(command)
+                    success = true
+                end
+            rescue Errno::ECONNREFUSED
+                cnt += 1
+                puts "Retrying scp #{cnt}th time for #{self.public_dns_name}"
+                sleep(10)
+            end
         end
     end
 
