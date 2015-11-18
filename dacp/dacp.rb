@@ -26,7 +26,8 @@ class Dacp
         "enroll_cluster",
         "enroll_vms",
         "enroll_db",
-        "enroll_web"
+        "enroll_web",
+        "configure_lb"
     ]
     @@options = {}
 
@@ -42,6 +43,7 @@ class Dacp
     #Connection to AWS EC2 client
     def self.init_aws()
         @@ec2 = Aws::EC2::Client.new(region: @@options[:region])
+        @@lbc = Aws::ElasticLoadBalancing::Client.new(region: @@options[:region])
     end
 
     ##
@@ -161,6 +163,7 @@ class Dacp
         self.run_enroll_vms()
         self.run_enroll_db()
         self.run_enroll_web()
+        self.run_configure_lb()
     end
 
     ##
@@ -190,6 +193,44 @@ class Dacp
     #Create AWS instances for cluster with puppet
     def self.run_enroll_vms()
         system "puppet apply ../puppet/create.pp --templatedir ../puppet/templates/"
+    end
+
+    ##
+    #Configure LoadBalancer healt check for cluster
+    def self.run_configure_lb()
+        lb_sg = DacpSg.new(@@ec2, @@options, "#{@@options[:instance_prefix]}lb-sg")
+        instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
+        resp = @@lbc.create_load_balancer({
+            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
+            listeners: [
+                protocol: "HTTP",
+                load_balancer_port: 80,
+                instance_protocol: "HTTP",
+                instance_port: 80,
+            ],
+            availability_zones: ["#{@@options[:region]}b"],
+            security_groups: [lb_sg.group_id],
+        })
+        pp resp
+        resp = @@lbc.configure_health_check({
+            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
+            health_check: {
+                target: "HTTP:80/robots.txt",
+                interval: 15,
+                timeout: 10,
+                unhealthy_threshold: 3,
+                healthy_threshold: 3,
+            },
+        })
+        pp resp
+        resp = @@lbc.register_instances_with_load_balancer({
+            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
+            instances: [{
+                instance_id: instance_web1.instance_id,
+            },],
+        })
+        pp resp
+            
     end
 
     ##

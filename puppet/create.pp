@@ -83,15 +83,3 @@ ec2_instance { "${prefix}db-1":
   #used to set default ssh port to 222 during boot
   user_data         => template('ssh_user_data.erb')
 }
-
-elb_loadbalancer { "${prefix}lb-1":
-  ensure             => present,
-  availability_zones => ['ap-southeast-1b'],
-  instances          => ["${prefix}web-1"],
-  listeners          => [{
-    protocol           => 'tcp',
-    load_balancer_port => 80,
-    instance_protocol  => 'tcp',
-    instance_port      => 80,
-  }],
-}
