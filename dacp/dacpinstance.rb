@@ -122,7 +122,8 @@ class DacpInstance
     #Apply local puppet file on server
     def apply_puppet(file)
         self.copy_file(file)
-        self.run_command("sudo puppet apply ~/#{Pathname(file).basename}")
+        res = self.run_command("sudo puppet apply --templatedir ./ ~/#{Pathname(file).basename}")
+        puts res
     end
 
     ##
@@ -134,6 +135,7 @@ class DacpInstance
             begin
                 Net::SSH.start(self.public_dns_name, @options[:login_name], {:keys => @options[:key_location], :port => @options[:ssh_port]}) do |ssh|
                     res = ssh.exec!(command)
+                    puts res
                     success = true
                 end
             rescue Errno::ECONNREFUSED
