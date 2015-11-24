@@ -33,10 +33,16 @@ class Dacp
     @@options = {}
 
     ##
+    #Init configuration for API and CLI
+    def self.init(api)
+        self.parse(api, ARGV)
+        self.init_aws()
+    end
+
+    ##
     #Runs the command specified in CLI argument
     def self.run()
-        self.parse(ARGV)
-        self.init_aws()
+        self.init(false)
         self.run_command(@@options[:command])
     end
 
@@ -49,7 +55,7 @@ class Dacp
 
     ##
     #Parse arguments
-    def self.parse(args)
+    def self.parse(api, args)
         options = {}
         OptionParser.new do |opts|
             opts.banner = "Usage: dacp.rb [command] [options]"
@@ -78,6 +84,7 @@ class Dacp
             raise "Wrong command, try -h" unless \
                 @@available_commands.include? command
         end
+        @@options[:api] = api
         @@options[:command] = command
 	#set awsconfig options
         @@options[:security_group] = CONFIG['AWSCONFIG']['SECURITY_GROUP']
