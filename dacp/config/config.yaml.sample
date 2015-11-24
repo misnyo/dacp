@@ -13,3 +13,7 @@ MYSQL:
     USER: drupal
     USER_PW: notsosecure
     DB: drupal
+DRUPAL:
+    USER: admin
+    EMAIL: root@localhost
+    PASSWORD: notsosecure
