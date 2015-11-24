@@ -22,6 +22,11 @@ Development
 ===========
 * hooks/apply.sh applies automatic documentation update on every commit to ../dacp-gh-pages/doc for github pages
 
+API
+===
+* cd dacp
+* bundle exec rerun 'bundle exec rackup'
+
 
 Project Summary
 ===============
