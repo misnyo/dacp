@@ -180,6 +180,7 @@ class Dacp
         instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
         instance_web1.install_puppet()
         instance_web1.copy_file("../puppet/drupalparams.pp")
+        instance_web1.copy_file("../puppet/templates/apache-config.erb")
         instance_web1.apply_puppet("../puppet/web.pp")
     end
 

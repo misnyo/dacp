@@ -49,11 +49,17 @@ package { 'curl':
   ensure => installed,
 }
 
-file { '/var/www/html/info.php':
-  ensure => file,
-  content => '<?php  phpinfo(); ?>',
-  require => Package['apache2'],
-} 
+file { "000-default.conf":
+    notify  => Service['apache2'],
+    path    => "/etc/apache2/sites-available/000-default.conf",
+    ensure  => present,
+    require => Package["apache2"],
+    owner   => "root",
+    group   => "root",
+    mode    => 0644,
+    replace => true,
+    content => template('apache-config.erb'),
+}
 
 exec { 'install composer':
   command => '/usr/bin/curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer',

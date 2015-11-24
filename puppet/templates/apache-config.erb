@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+    ServerAdmin <%= @admin_email %>
+    DocumentRoot /var/www/html/
+    RewriteEngine On
+    RewriteOptions inherit
+    <Directory /var/www/html/>
+        AllowOverride All
+        order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
