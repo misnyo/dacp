@@ -119,13 +119,32 @@ class Dacp
     end
 
     ##
-    #List all instances in configured region
-    def self.run_list()
+    #Get all instances in configured region
+    def self.get_list()
+        @ret = []
         resp = @@ec2.describe_instances()
-        puts "No instances found!" unless !resp.reservations.empty?
+        return ["No instances found!"] unless !resp.reservations.empty?
         for r in resp.reservations
             for i in r.instances
-                puts "#{i.instance_id} - #{i.tags.find {|t| t.key == "Name"}.value} - #{i.state.name} - #{i.public_dns_name}"
+                @ret << {
+                    instance_id: i.instance_id,
+                    name: i.tags.find {|t| t.key == "Name"}.value,
+                    state: i.state.name,
+                    public_dns_name: i.public_dns_name
+                }
+            end
+        end
+        return @ret
+    end
+
+    ##
+    #List all instances in configured region
+    def self.run_list()
+        for i in self.get_list()
+            if i.instance_of? String
+                puts i
+            else
+                puts "#{i[:instance_id]} - #{i[:name]} - #{i[:state]} - #{i[:public_dns_name]}"
             end
         end
     end
