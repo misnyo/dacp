@@ -90,14 +90,8 @@ exec { 'chown drupal':
   cwd => '/var/www/html',
 }
 
-exec { 'chmod drupal':
-  command => '/usr/bin/sudo /bin/chmod -R 774 /var/www/html',
-  require => Exec['chown drupal'],
-  cwd => '/var/www/html',
-}
-
 exec { 'install drupal':
-  command => "/home/ubuntu/.composer/vendor/bin/drush site-install standard -y --account-name=admin --account-pass=admin --db-url=$drupal_db_url --account-mail=misnyo@msinyo.eu",
-  require => [ Exec['chmod drupal'], Package['sendmail'] ],
+  command => "/home/ubuntu/.composer/vendor/bin/drush site-install standard -y --account-name=$admin_user --account-pass=$admin_password --db-url=$drupal_db_url --account-mail=$admin_email",
+  require => [ Exec['chown drupal'], Package['sendmail'] ],
   cwd => '/var/www/html',
 }
