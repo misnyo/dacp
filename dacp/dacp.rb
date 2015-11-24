@@ -94,6 +94,10 @@ class Dacp
         @@options[:mysql_user] = CONFIG['MYSQL']['USER']
         @@options[:mysql_user_pw] = CONFIG['MYSQL']['USER_PW'] || SecureRandom.hex
         @@options[:mysql_db] = CONFIG['MYSQL']['DB']
+        #set drupal options
+        @@options[:admin_email] = CONFIG['DRUPAL']['EMAIL']
+        @@options[:admin_password] = CONFIG['DRUPAL']['PASSWORD'] || SecureRandom.hex
+        @@options[:admin_user] = CONFIG['DRUPAL']['USER']
     end
 
     ##
