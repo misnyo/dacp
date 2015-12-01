@@ -95,7 +95,7 @@ class Dacp
 	#set host options
         @@options[:ssh_port] = CONFIG['HOSTS']['SSH_PORT']
         @@options[:login_name] = CONFIG['HOSTS']['LOGIN_NAME']
-        @@options[:instance_prefix] || CONFIG['HOSTS']['INSTANCE_PREFIX']
+        @@options[:instance_prefix] = @@options[:instance_prefix] || CONFIG['HOSTS']['INSTANCE_PREFIX']
         #set mysql options
         @@options[:mysql_pw] = CONFIG['MYSQL']['ROOT_PW'] || SecureRandom.hex
         @@options[:mysql_user] = CONFIG['MYSQL']['USER']
@@ -151,15 +151,15 @@ class Dacp
 
     ##
     #Start instance specified in options
-    def self.run_start()
-        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+    def self.run_start(instance_id=@@options[:instance])
+        instance = DacpInstance.new(@@ec2, @@options, instance_id)
         instance.start()
     end
 
     ##
     #Stop instance specified in options
-    def self.run_stop()
-        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+    def self.run_stop(instance_id=@@options[:instance])
+        instance = DacpInstance.new(@@ec2, @@options, instance_id)
         instance.stop()
     end
 
@@ -267,10 +267,14 @@ class Dacp
             
     end
 
+    def self.get_config()
+        return @@options
+    end
+
     ##
     #Show configuration
     def self.run_show_config()
-        pp @@options
+        pp self.get_config()
     end
 end
 
