@@ -1,0 +1,12 @@
+    <table class="table">
+      <thead>
+        <td>Key</td>
+        <td>Value</td>
+      </thead>
+      <tbody ng-controller="configController">
+        <tr ng-repeat="(key, value) in config">
+          <td>{{ key }}</td>
+          <td>{{ value }}</td>
+        </tr>
+      </tbody>
+    <table>
