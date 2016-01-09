@@ -7,7 +7,8 @@ Quick run
 * apt-get install puppet ruby ruby-dev
 * gem install bundler
 * bundle install --path vendor/bundle
-* puppet module install puppetlabs-aws
+* wget https://github.com/misnyo/puppetlabs-aws/archive/elb_sg_fix.tar.gz -O /tmp/puppetlabs-aws-1.3.0-a.tar.gz
+* puppet module install --force --ignore-dependencies /tmp/puppetlabs-aws-1.3.0-a.tar.gz
 * ./dacp.rb
 
 Docker
