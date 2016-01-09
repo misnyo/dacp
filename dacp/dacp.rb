@@ -32,10 +32,16 @@ class Dacp
     @@options = {}
 
     ##
+    #Init configuration for API and CLI
+    def self.init(api)
+        self.parse(api, ARGV)
+        self.init_aws()
+    end
+
+    ##
     #Runs the command specified in CLI argument
     def self.run()
-        self.parse(ARGV)
-        self.init_aws()
+        self.init(false)
         self.run_command(@@options[:command])
     end
 
@@ -48,7 +54,7 @@ class Dacp
 
     ##
     #Parse arguments
-    def self.parse(args)
+    def self.parse(api, args)
         options = {}
         OptionParser.new do |opts|
             opts.banner = "Usage: dacp.rb [command] [options]"
@@ -77,6 +83,7 @@ class Dacp
             raise "Wrong command, try -h" unless \
                 @@available_commands.include? command
         end
+        @@options[:api] = api
         @@options[:command] = command
 	#set awsconfig options
         @@options[:security_group] = CONFIG['AWSCONFIG']['SECURITY_GROUP']
@@ -87,7 +94,7 @@ class Dacp
 	#set host options
         @@options[:ssh_port] = CONFIG['HOSTS']['SSH_PORT']
         @@options[:login_name] = CONFIG['HOSTS']['LOGIN_NAME']
-        @@options[:instance_prefix] || CONFIG['HOSTS']['INSTANCE_PREFIX']
+        @@options[:instance_prefix] = @@options[:instance_prefix] || CONFIG['HOSTS']['INSTANCE_PREFIX']
         #set mysql options
         @@options[:mysql_pw] = CONFIG['MYSQL']['ROOT_PW'] || SecureRandom.hex
         @@options[:mysql_user] = CONFIG['MYSQL']['USER']
@@ -111,28 +118,47 @@ class Dacp
     end
 
     ##
-    #List all instances in configured region
-    def self.run_list()
+    #Get all instances in configured region
+    def self.get_list()
+        @ret = []
         resp = @@ec2.describe_instances()
-        puts "No instances found!" unless !resp.reservations.empty?
+        return ["No instances found!"] unless !resp.reservations.empty?
         for r in resp.reservations
             for i in r.instances
-                puts "#{i.instance_id} - #{i.tags.find {|t| t.key == "Name"}.value} - #{i.state.name} - #{i.public_dns_name}"
+                @ret << {
+                    instance_id: i.instance_id,
+                    name: i.tags.find {|t| t.key == "Name"}.value,
+                    state: i.state.name,
+                    public_dns_name: i.public_dns_name
+                }
+            end
+        end
+        return @ret
+    end
+
+    ##
+    #List all instances in configured region
+    def self.run_list()
+        for i in self.get_list()
+            if i.instance_of? String
+                puts i
+            else
+                puts "#{i[:instance_id]} - #{i[:name]} - #{i[:state]} - #{i[:public_dns_name]}"
             end
         end
     end
 
     ##
     #Start instance specified in options
-    def self.run_start()
-        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+    def self.run_start(instance_id=@@options[:instance])
+        instance = DacpInstance.new(@@ec2, @@options, instance_id)
         instance.start()
     end
 
     ##
     #Stop instance specified in options
-    def self.run_stop()
-        instance = DacpInstance.new(@@ec2, @@options, @@options[:instance])
+    def self.run_stop(instance_id=@@options[:instance])
+        instance = DacpInstance.new(@@ec2, @@options, instance_id)
         instance.stop()
     end
 
@@ -207,10 +233,14 @@ class Dacp
         system "puppet apply ../puppet/destroy.pp"
     end
 
+    def self.get_config()
+        return @@options
+    end
+
     ##
     #Show configuration
     def self.run_show_config()
-        pp @@options
+        pp self.get_config()
     end
 end
 
