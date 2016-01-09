@@ -8,7 +8,6 @@ require 'pp'
 require 'erb'
 require 'securerandom'
 require './dacpinstance'
-require './dacpsg'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
@@ -28,7 +27,7 @@ class Dacp
         "enroll_vms",
         "enroll_db",
         "enroll_web",
-        "configure_lb"
+        "destroy_cluster"
     ]
     @@options = {}
 
@@ -168,7 +167,6 @@ class Dacp
         self.run_enroll_vms()
         self.run_enroll_db()
         self.run_enroll_web()
-        self.run_configure_lb()
     end
 
     ##
@@ -204,41 +202,9 @@ class Dacp
     end
 
     ##
-    #Configure LoadBalancer healt check for cluster
-    def self.run_configure_lb()
-        lb_sg = DacpSg.new(@@ec2, @@options, "#{@@options[:instance_prefix]}lb-sg")
-        instance_web1 = DacpInstance.new(@@ec2, @@options, "#{@@options[:instance_prefix]}web-1")
-        resp = @@lbc.create_load_balancer({
-            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
-            listeners: [
-                protocol: "HTTP",
-                load_balancer_port: 80,
-                instance_protocol: "HTTP",
-                instance_port: 80,
-            ],
-            availability_zones: ["#{@@options[:region]}b"],
-            security_groups: [lb_sg.group_id],
-        })
-        pp resp
-        resp = @@lbc.configure_health_check({
-            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
-            health_check: {
-                target: "HTTP:80/robots.txt",
-                interval: 15,
-                timeout: 10,
-                unhealthy_threshold: 3,
-                healthy_threshold: 3,
-            },
-        })
-        pp resp
-        resp = @@lbc.register_instances_with_load_balancer({
-            load_balancer_name: "#{@@options[:instance_prefix]}lb-1",
-            instances: [{
-                instance_id: instance_web1.instance_id,
-            },],
-        })
-        pp resp
-            
+    #Destroy cluster 
+    def self.run_destroy_cluster()
+        system "puppet apply ../puppet/destroy.pp"
     end
 
     ##

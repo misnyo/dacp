@@ -6,3 +6,8 @@ $mysql_pw = '<%= @@options[:mysql_pw] %>'
 $mysql_db = '<%= @@options[:mysql_db] %>'
 $mysql_user = '<%= @@options[:mysql_user] %>'
 $mysql_user_pw = '<%= @@options[:mysql_user_pw] %>'
+
+Ec2_instance {
+  region            => $region,
+  availability_zone => "${region}b",
+}
