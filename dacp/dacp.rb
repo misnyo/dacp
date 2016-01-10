@@ -150,11 +150,15 @@ class Dacp
         end
     end
 
+    ##
+    #Get public facing dns of load balancer
     def self.get_dns()
         lb = DacpLB.new(@@lbc, @@options, "#{@@options[:instance_prefix]}lb-1")
         lb.dns_name
     end
 
+    ##
+    #List public facing dns of load balancer
     def self.run_get_dns()
         puts self.get_dns()
     end
