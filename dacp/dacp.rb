@@ -8,6 +8,7 @@ require 'pp'
 require 'erb'
 require 'securerandom'
 require './dacpinstance'
+require './dacplb'
 
 CONFIG = YAML.load_file("config/config.yaml") unless defined? CONFIG
 
@@ -19,6 +20,7 @@ class Dacp
     #List of available CLI commands
     @@available_commands = [
         "list",
+        "get_dns",
         "start",
         "stop",
         "init_puppet",
@@ -146,6 +148,15 @@ class Dacp
                 puts "#{i[:instance_id]} - #{i[:name]} - #{i[:state]} - #{i[:public_dns_name]}"
             end
         end
+    end
+
+    def self.get_dns()
+        lb = DacpLB.new(@@lbc, @@options, "#{@@options[:instance_prefix]}lb-1")
+        lb.dns_name
+    end
+
+    def self.run_get_dns()
+        puts self.get_dns()
     end
 
     ##
