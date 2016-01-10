@@ -27,6 +27,12 @@ class API < Grape::API
     {message: "cluster enrolled"}
   end
 
+  get :destroy_cluster do
+    Dacp.init(api=true)
+    Dacp.run_destroy_cluster()
+    {message: "cluster destroyed"}
+  end
+
   params do
     requires :id, type: String
   end
