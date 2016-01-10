@@ -11,8 +11,8 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <form class="navbar-form navbar-right">
-            <button type="submit" class="btn btn-success" ng-click="enroll()">Enroll cluster</button>
-            <button type="submit" class="btn btn-danger" ng-click="destroy()">Destroy cluster</button>
+            <button type="submit" class="btn btn-success" ng-click="enroll()" ng-disabled="enroll_progress">Enroll cluster</button>
+            <button type="submit" class="btn btn-danger" ng-click="destroy()" ng-disabled="destroy_progress">Destroy cluster</button>
           </form>
         </div>
       </div>

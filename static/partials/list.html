@@ -1,25 +1,28 @@
-    <table class="table" ng-controller="listController">
-      <thead>
-        <td>Name</td>
-        <td>Address</td>
-        <td>State</td>
-        <td>
-          <button type="button" class="btn btn-default" aria-label="Refresh">
-            <span class="glyphicon glyphicon-refresh" aria-hidden="true" ng-click="refresh()"></span>
-          </button>
-        </td>
-      </thead>
-      <tbody>
-        <tr ng-hide="list.instances[0].name">
-          <td colspan="4" ng-hide="instance.name">{{ list.instances[0] }}</td>
-        </tr>
-        <tr ng-repeat="instance in list.instances" ng-show="list.instances[0].name">
-          <td>{{ instance.name }}</td>
-          <td>{{ instance.public_dns_name }}</td>
-          <td>{{ instance.state }}</td>
+    <div ng-controller="listController">
+    <h3 ng-show="list.dns">Public dns: <a href="http://{{ list.dns }}" target="_blank">{{ list.dns }}</a></h3>
+      <table class="table">
+        <thead>
+          <td>Name</td>
+          <td>Address</td>
+          <td>State</td>
           <td>
-            <button type="button" class="btn btn-success" ng-show="instance.state=='stopped'" ng-click="start(instance.name)">Start</button>
-            <button type="button" class="btn btn-danger" ng-show="instance.state=='running'" ng-click="stop(instance.name)">Stop</button></td>
-        </tr>
-      </tbody>
-    <table>
+            <button type="button" class="btn btn-default" aria-label="Refresh">
+              <span class="glyphicon glyphicon-refresh" aria-hidden="true" ng-click="refresh()"></span>
+            </button>
+          </td>
+        </thead>
+        <tbody>
+          <tr ng-hide="list.instances[0].name">
+            <td colspan="4" ng-hide="instance.name">{{ list.instances[0] }}</td>
+          </tr>
+          <tr ng-repeat="instance in list.instances" ng-show="list.instances[0].name">
+            <td>{{ instance.name }}</td>
+            <td>{{ instance.public_dns_name }}</td>
+            <td>{{ instance.state }}</td>
+            <td>
+              <button type="button" class="btn btn-success" ng-show="instance.state=='stopped'" ng-click="start(instance.name)">Start</button>
+              <button type="button" class="btn btn-danger" ng-show="instance.state=='running'" ng-click="stop(instance.name)">Stop</button></td>
+          </tr>
+        </tbody>
+      <table>
+    </div>

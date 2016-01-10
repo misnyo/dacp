@@ -32,11 +32,13 @@
         $scope.start = function(instance_id) {
             $http.get('/api/instance/start/' + instance_id).success(function(data){
                 $scope.refresh();
+                alert(data.message);
             });
         }
         $scope.stop = function(instance_id) {
             $http.get('/api/instance/stop/' + instance_id).success(function(data){
                 $scope.refresh();
+                alert(data.message);
             });
         }
         $interval($scope.refresh, 15000);
@@ -49,13 +51,21 @@
         });
     }]);
     app.controller("navController", ['$scope', '$http', function($scope, $http){
+        $scope.destroy_progress = false;
+        $scope.enroll_progress = false;
         $scope.enroll = function(){
             $http.get('/api/enroll_cluster').success(function(data){
+                alert(data.message);
+                $scope.enroll_progress = false;
             });
+            $scope.enroll_progress = true;
         };
         $scope.destroy = function(){
             $http.get('/api/destroy_cluster').success(function(data){
+                alert(data.message);
+                $scope.destroy_progress = false;
             });
+            $scope.destroy_progress = true;
         };
     }]);
 })();
