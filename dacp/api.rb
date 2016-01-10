@@ -18,7 +18,7 @@ class API < Grape::API
 
   get :list do
     Dacp.init(api=true)
-    {instances: Dacp.get_list()}
+    {instances: Dacp.get_list(), dns: Dacp.get_dns()}
   end
 
   get :enroll_cluster do
