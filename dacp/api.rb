@@ -38,13 +38,15 @@ class API < Grape::API
   end
   get '/instance/start/:id' do
     Dacp.run_start(params[:id])        
+    {message: "instance #{params[:id]} started"}
   end
 
   params do
     requires :id, type: String
   end
   get '/instance/stop/:id' do
-    Dacp.run_stop(params[:id])        
+    Dacp.run_stop(params[:id]) 
+    {message: "instance #{params[:id]} stopped"}
   end
 end
 
